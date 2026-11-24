@@ -27,9 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const remainingCount = document.getElementById('remaining-count');
     const remainingClose = document.getElementById('remaining-close');
 
-    const modalOverlay = document.getElementById('modal-overlay');
+    // Modales
+    const modalOverlay = document.getElementById('modal-overlay'); // Reset
     const modalCancel = document.getElementById('modal-cancel');
     const modalConfirm = document.getElementById('modal-confirm');
+
+    const contactModal = document.getElementById('contact-modal');
+    const contactClose = document.getElementById('contact-close');
+    const contactForm = document.getElementById('contact-form');
+    const contactChat = document.getElementById('contact-chat');
+    const btnContactTriggers = document.querySelectorAll('.btn-contact-trigger');
 
     // --- État ---
     const STORAGE_KEY = 'portfolio_state_v1';
@@ -46,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
-    document.querySelectorAll('a, button, .nav-item, .remaining-chip, .project-card, .stack-val').forEach(el => {
+    document.querySelectorAll('a, button, .nav-item, .remaining-chip, .project-card, .stack-val, .btn-contact-trigger').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('expanded'));
         el.addEventListener('mouseleave', () => cursor.classList.remove('expanded'));
     });
@@ -97,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gatekeeper.classList.add('dismissed');
         portfolio.classList.add('revealed');
-        document.body.classList.add('portfolio-open'); // Affiche le bouton console
+        document.body.classList.add('portfolio-open');
 
         updateProgressBadge();
         updateRemainingPanel();
@@ -123,14 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        cinematic.classList.add('active');
-        setTimeout(() => cinematic.classList.remove('active'), 1200);
+        if (sectionIds.length > 0) {
+            cinematic.classList.add('active');
+            setTimeout(() => cinematic.classList.remove('active'), 1200);
 
-        setTimeout(() => {
-            gatekeeper.classList.add('dismissed');
-            portfolio.classList.add('revealed');
-            document.body.classList.add('portfolio-open'); // Affiche le bouton console
-        }, 400);
+            setTimeout(() => {
+                gatekeeper.classList.add('dismissed');
+                portfolio.classList.add('revealed');
+                document.body.classList.add('portfolio-open');
+            }, 400);
+        }
 
         updateProgressBadge();
         updateRemainingPanel();
@@ -242,7 +251,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (resolved) {
             appendMessage(COMMANDS[resolved].message, 'success-msg', targetOutput);
-            unlockSections(COMMANDS[resolved].sections, resolved);
+            
+            // Si c'est la commande contact()
+            if (resolved === 'contact()') {
+                setTimeout(openContactModal, 400);
+            } else {
+                unlockSections(COMMANDS[resolved].sections, resolved);
+            }
         } else {
             if (targetContainer) {
                 targetContainer.classList.add('shake');
@@ -304,6 +319,13 @@ document.addEventListener('DOMContentLoaded', () => {
         chip.addEventListener('click', () => {
             if (input.disabled) return;
             simulateTyping(chip.dataset.cmd, input);
+        });
+    });
+
+    // --- Bouton Contact dans la section Contact ---
+    btnContactTriggers.forEach(btn => {
+        btn.addEventListener('click', () => {
+            openContactModal();
         });
     });
 
@@ -468,26 +490,69 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // --- Reset ---
-    function openModal() {
+    // --- Modales ---
+    function openResetModal() {
         modalOverlay.classList.add('visible');
         modalOverlay.setAttribute('aria-hidden', 'false');
     }
-    function closeModal() {
+    function closeResetModal() {
         modalOverlay.classList.remove('visible');
         modalOverlay.setAttribute('aria-hidden', 'true');
     }
-    resetBtn.addEventListener('click', openModal);
-    modalCancel.addEventListener('click', closeModal);
+    resetBtn.addEventListener('click', openResetModal);
+    modalCancel.addEventListener('click', closeResetModal);
     modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) closeModal();
+        if (e.target === modalOverlay) closeResetModal();
     });
 
     modalConfirm.addEventListener('click', () => {
-        closeModal();
+        closeResetModal();
         resetAll();
     });
 
+    // Gestion Modale Contact
+    function openContactModal() {
+        contactModal.classList.add('visible');
+        contactModal.setAttribute('aria-hidden', 'false');
+        contactForm.reset();
+        // Réinitialiser le chat
+        contactChat.innerHTML = `
+            <p class="sys-msg">// Initialisation du formulaire de contact...</p>
+            <p class="sys-msg">// Veuillez répondre aux questions.</p>
+        `;
+        // Focus sur le premier champ
+        setTimeout(() => document.getElementById('contact-name').focus(), 100);
+    }
+    function closeContactModal() {
+        contactModal.classList.remove('visible');
+        contactModal.setAttribute('aria-hidden', 'true');
+    }
+    contactClose.addEventListener('click', closeContactModal);
+    contactModal.addEventListener('click', (e) => {
+        if (e.target === contactModal) closeContactModal();
+    });
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('contact-name').value;
+        const email = document.getElementById('contact-email').value;
+        const message = document.getElementById('contact-message').value;
+
+        // Simuler l'envoi
+        contactChat.innerHTML += `<p class="user-cmd">> Envoi du message...</p>`;
+        
+        setTimeout(() => {
+            contactChat.innerHTML += `<p class="success-msg">> Message envoyé avec succès par ${name}. Je vous recontacterai à l'adresse ${email}.</p>`;
+            contactForm.reset();
+            // Message dans la console principale
+            addSystemMessage(`// Message de contact envoyé par ${name} (${email}).`);
+            
+            // Fermeture auto après 2 secondes
+            setTimeout(closeContactModal, 2500);
+        }, 800);
+    });
+
+    // --- Reset Global ---
     function resetAll() {
         unlockedSections.clear();
         hiddenRemaining = false;
@@ -506,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         portfolio.classList.remove('revealed');
         gatekeeper.classList.remove('dismissed');
-        document.body.classList.remove('portfolio-open'); // Cache le bouton console
+        document.body.classList.remove('portfolio-open');
         scrollIndicator.classList.remove('visible');
         remainingPanel.classList.remove('visible');
 
@@ -518,10 +583,10 @@ document.addEventListener('DOMContentLoaded', () => {
         drawerOutput.innerHTML = `<p class="sys-msg">// Console persistante. Tapez une commande.</p>`;
 
         closeDrawer();
+        closeContactModal();
         localStorage.removeItem(STORAGE_KEY);
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Focus uniquement sur desktop pour éviter le clavier sur mobile
         if (window.innerWidth > 1024) {
             setTimeout(() => input.focus(), 400);
         }
@@ -531,7 +596,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadState();
     applyLoadedState();
 
-    // Auto-focus conditionnel
     if (input && window.innerWidth > 1024) {
         setTimeout(() => input.focus(), 800);
     }

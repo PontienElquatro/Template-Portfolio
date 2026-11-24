@@ -11,8 +11,14 @@ const COMMANDS = {
     },
     'openContact()': {
         sections: ['section-contact'],
-        message: "> Coordonnées débloquées...",
+        message: "> Section contact débloquée...",
         label: "Contact"
+    },
+    'contact()': {
+        sections: [], // N'ouvre pas de section, ouvre une modale
+        message: "> Initialisation du formulaire de contact...",
+        label: "Formulaire",
+        isAction: true // Indique que c'est une action spécifique
     },
     'openAll()': {
         sections: ['section-hero', 'section-expertise', 'section-work', 'section-contact'],

@@ -204,7 +204,8 @@
                 <div class="contact-wrapper">
                     <span class="eyebrow">// Contact</span>
                     <h2 class="editorial-title">Discutons de<br><em>votre projet.</em></h2>
-                    <a href="mailto:ton@email.com" class="contact-link">ton@email.com</a>
+                    <p class="contact-desc">Prêt à collaborer ? Utilisez la commande <code>contact()</code> dans la console ou cliquez ci-dessous.</p>
+                    <button class="btn-contact-trigger" data-cmd="contact()">Initialiser le contact</button>
                 </div>
             </section>
 
@@ -279,6 +280,37 @@
             <button class="remaining-close" id="remaining-close" aria-label="Masquer">×</button>
         </div>
         <div class="remaining-chips" id="remaining-chips"></div>
+    </div>
+
+    <!-- MODALE DE CONTACT INTERACTIVE -->
+    <div class="modal-overlay" id="contact-modal" aria-hidden="true">
+        <div class="modal modal-contact" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <span class="console-title">contact_form.init</span>
+                <button class="modal-close" id="contact-close" aria-label="Fermer">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-chat" id="contact-chat">
+                    <p class="sys-msg">// Initialisation du formulaire de contact...</p>
+                    <p class="sys-msg">// Veuillez répondre aux questions.</p>
+                </div>
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="contact-name">Nom / Prénom</label>
+                        <input type="text" id="contact-name" required placeholder="ex: Jean Dupont">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email</label>
+                        <input type="email" id="contact-email" required placeholder="ex: jean@exemple.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" rows="4" required placeholder="Votre projet, vos besoins..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Envoyer le message</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- MODALE RESET -->
