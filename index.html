@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio — [Ton Nom]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- HEADER TRANSPARENT -->
+    <header class="main-header" id="main-header">
+        <div class="header-left">
+            <a href="#" class="logo" data-scroll="top">[Ton Nom]</a>
+        </div>
+        <div class="header-center">
+            <nav class="unlock-nav" id="unlock-nav" aria-label="Navigation des sections">
+                <button class="nav-item" data-target="section-hero" data-cmd="openParcours()" disabled>
+                    <span class="nav-dot"></span><span class="nav-label">Profil</span>
+                </button>
+                <button class="nav-item" data-target="section-expertise" data-cmd="openParcours()" disabled>
+                    <span class="nav-dot"></span><span class="nav-label">Stack</span>
+                </button>
+                <button class="nav-item" data-target="section-work" data-cmd="openRealisations()" disabled>
+                    <span class="nav-dot"></span><span class="nav-label">Projets</span>
+                </button>
+                <button class="nav-item" data-target="section-contact" data-cmd="openContact()" disabled>
+                    <span class="nav-dot"></span><span class="nav-label">Contact</span>
+                </button>
+            </nav>
+        </div>
+        <div class="header-right">
+            <span class="progress-badge" id="progress-badge">0/4</span>
+            <button id="reset-btn" class="btn-reset" aria-label="Réinitialiser la session">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                <span>Reset</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- PORTFOLIO -->
+    <div id="portfolio-content" class="portfolio-behind">
+        <div class="portfolio-inner">
+
+            <!-- 01. PROFIL -->
+            <section id="section-hero" class="section-container hidden-section">
+                <div class="hero-grid">
+                    <div class="hero-image-col">
+                        <div class="hero-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" alt="Portrait" class="portrait">
+                        </div>
+                    </div>
+                    <div class="hero-text-col">
+                        <span class="eyebrow">// Profil</span>
+                        <h1 class="hero-title">Développeur<br><em>FullStack.</em></h1>
+                        <p class="hero-desc">Je conçois des architectures robustes et des interfaces performantes. Du prototype au déploiement, avec une obsession pour la qualité du code et l'expérience utilisateur.</p>
+                        <div class="hero-meta">
+                            <span>Paris / Remote</span>
+                            <span>Disponible</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 02. STACK -->
+            <section id="section-expertise" class="section-container hidden-section">
+                <div class="section-head">
+                    <span class="eyebrow">// Stack Technique</span>
+                    <h2 class="editorial-title">Outils & <em>Technos</em></h2>
+                </div>
+                
+                <div class="stack-table">
+                    <div class="stack-row">
+                        <div class="stack-label">Langages</div>
+                        <div class="stack-values">
+                            <span class="stack-val"><i class="devicon-typescript-plain colored"></i> TypeScript</span>
+                            <span class="stack-val"><i class="devicon-javascript-plain colored"></i> JavaScript</span>
+                            <span class="stack-val"><i class="devicon-python-plain colored"></i> Python</span>
+                            <span class="stack-val"><i class="devicon-azuresqldatabase-plain colored"></i> SQL</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stack-row">
+                        <div class="stack-label">Frontend</div>
+                        <div class="stack-values">
+                            <span class="stack-val"><i class="devicon-react-original colored"></i> React</span>
+                            <span class="stack-val"><i class="devicon-nextjs-original"></i> Next.js</span>
+                            <span class="stack-val"><i class="devicon-tailwindcss-original colored"></i> Tailwind CSS</span>
+                        </div>
+                    </div>
+
+                    <div class="stack-row">
+                        <div class="stack-label">Backend</div>
+                        <div class="stack-values">
+                            <span class="stack-val"><i class="devicon-nodejs-plain colored"></i> Node.js</span>
+                            <span class="stack-val"><i class="devicon-express-original"></i> Express</span>
+                            <span class="stack-val"><i class="devicon-fastapi-plain colored"></i> FastAPI</span>
+                        </div>
+                    </div>
+
+                    <div class="stack-row">
+                        <div class="stack-label">Base de données</div>
+                        <div class="stack-values">
+                            <span class="stack-val"><i class="devicon-postgresql-plain colored"></i> PostgreSQL</span>
+                            <span class="stack-val"><i class="devicon-mongodb-plain colored"></i> MongoDB</span>
+                            <span class="stack-val"><i class="devicon-redis-plain colored"></i> Redis</span>
+                        </div>
+                    </div>
+
+                    <div class="stack-row">
+                        <div class="stack-label">Outils</div>
+                        <div class="stack-values">
+                            <span class="stack-val"><i class="devicon-docker-plain colored"></i> Docker</span>
+                            <span class="stack-val"><i class="devicon-git-plain colored"></i> Git</span>
+                            <span class="stack-val"><i class="devicon-amazonwebservices-original colored"></i> AWS</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 03. PROJETS -->
+            <section id="section-work" class="section-container hidden-section">
+                <div class="section-head">
+                    <span class="eyebrow">// Portfolio</span>
+                    <h2 class="editorial-title">Projets <em>récents</em></h2>
+                </div>
+
+                <div class="project-grid">
+                    <!-- Projet 1 -->
+                    <a href="#" class="project-card">
+                        <div class="project-img-wrapper" style="background: #E0F2FE;">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop" alt="Projet Alpha">
+                            <span class="project-tag">App Web</span>
+                        </div>
+                        <div class="project-info">
+                            <div class="project-price">2024</div>
+                            <h3 class="project-title">Alpha Analytics</h3>
+                            <p class="project-desc">Dashboard temps réel pour une fintech. Gestion de flux de données complexes.</p>
+                            <div class="project-stack">
+                                <span class="tech-badge html">React</span>
+                                <span class="tech-badge node">Node.js</span>
+                                <span class="tech-badge socket">Socket.io</span>
+                            </div>
+                            <div class="project-action">
+                                <span>Voir l'étude de cas</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Projet 2 -->
+                    <a href="#" class="project-card">
+                        <div class="project-img-wrapper" style="background: #FCE7F3;">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" alt="Projet Beta">
+                            <span class="project-tag">E-commerce</span>
+                        </div>
+                        <div class="project-info">
+                            <div class="project-price">2023</div>
+                            <h3 class="project-title">Beta Store</h3>
+                            <p class="project-desc">Refonte complète d'une plateforme e-commerce avec paiement sécurisé.</p>
+                            <div class="project-stack">
+                                <span class="tech-badge next">Next.js</span>
+                                <span class="tech-badge stripe">Stripe</span>
+                                <span class="tech-badge sanity">Sanity</span>
+                            </div>
+                            <div class="project-action">
+                                <span>Voir l'étude de cas</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Projet 3 -->
+                    <a href="#" class="project-card">
+                        <div class="project-img-wrapper" style="background: #F3E8FF;">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop" alt="Projet Gamma">
+                            <span class="project-tag">SaaS</span>
+                        </div>
+                        <div class="project-info">
+                            <div class="project-price">2023</div>
+                            <h3 class="project-title">Gamma API</h3>
+                            <p class="project-desc">Plateforme SaaS de gestion de projet avec architecture microservices.</p>
+                            <div class="project-stack">
+                                <span class="tech-badge html">React</span>
+                                <span class="tech-badge python">Python</span>
+                                <span class="tech-badge sql">PostgreSQL</span>
+                            </div>
+                            <div class="project-action">
+                                <span>Voir l'étude de cas</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 04. CONTACT -->
+            <section id="section-contact" class="section-container hidden-section">
+                <div class="contact-wrapper">
+                    <span class="eyebrow">// Contact</span>
+                    <h2 class="editorial-title">Discutons de<br><em>votre projet.</em></h2>
+                    <a href="mailto:ton@email.com" class="contact-link">ton@email.com</a>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p>© 2024 [Ton Nom] — Tous droits réservés</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- GATEKEEPER -->
+    <main id="gatekeeper" class="gatekeeper-screen">
+        <div class="gatekeeper-left">
+            <div class="left-portrait"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" alt="Portrait"></div>
+            <div class="left-overlay"></div>
+            <div class="left-content">
+                <span class="left-num">01 / 04</span>
+                <h1 class="left-title">Développeur<br><em>FullStack</em></h1>
+                <p class="left-desc">Une session sécurisée. Débloquez chaque section en tapant les commandes proposées.</p>
+            </div>
+        </div>
+        <div class="gatekeeper-right">
+            <div class="right-top">
+                <span class="status-line"><span class="status-dot"></span>SESSION ACTIVE — Accès restreint</span>
+            </div>
+            <div class="console-container" id="console-container">
+                <div class="console-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="console-title">~ / portfolio / session.sh</span></div>
+                <div class="console-body" id="console-output">
+                    <p class="sys-msg">// Système initialisé.</p>
+                    <p class="sys-msg">// 0 / 4 sections débloquées.</p>
+                    <p class="sys-msg">// Tapez une commande pour commencer.</p>
+                </div>
+                <div class="console-input-line">
+                    <span class="prompt">$</span>
+                    <input type="text" id="command-input" autocomplete="off" spellcheck="false" placeholder="tapez une commande...">
+                </div>
+            </div>
+            <div class="hints">
+                <p class="hints-label">Commandes disponibles</p>
+                <div class="hint-chips">
+                    <button class="hint-chip" data-cmd="openParcours()">openParcours()</button>
+                    <button class="hint-chip" data-cmd="openRealisations()">openRealisations()</button>
+                    <button class="hint-chip" data-cmd="openContact()">openContact()</button>
+                    <button class="hint-chip accent" data-cmd="openAll()">openAll()</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- TERMINAL PERSISTANT (DRAWER) -->
+    <div class="terminal-drawer" id="terminal-drawer" aria-hidden="true">
+        <button class="drawer-toggle" id="drawer-toggle" aria-label="Ouvrir le terminal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            <span class="drawer-label">Console</span>
+        </button>
+        <div class="drawer-panel" id="drawer-panel">
+            <div class="drawer-header">
+                <span class="console-title">~ / portfolio / session.sh</span>
+                <button class="drawer-close" id="drawer-close" aria-label="Fermer">×</button>
+            </div>
+            <div class="console-body" id="drawer-output"><p class="sys-msg">// Console persistante. Tapez une commande.</p></div>
+            <div class="console-input-line">
+                <span class="prompt">$</span>
+                <input type="text" id="drawer-input" autocomplete="off" spellcheck="false" placeholder="tapez une commande...">
+            </div>
+        </div>
+    </div>
+
+    <!-- MINI-PANNEAU SECTIONS RESTANTES -->
+    <div class="remaining-panel" id="remaining-panel" aria-hidden="true">
+        <div class="remaining-head">
+            <span class="remaining-count" id="remaining-count">2 sections restantes</span>
+            <button class="remaining-close" id="remaining-close" aria-label="Masquer">×</button>
+        </div>
+        <div class="remaining-chips" id="remaining-chips"></div>
+    </div>
+
+    <!-- MODALE RESET -->
+    <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true">
+            <h3 class="modal-title">Réinitialiser la session ?</h3>
+            <p class="modal-text">Toute la progression sera perdue.</p>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="modal-cancel">Annuler</button>
+                <button class="modal-btn primary" id="modal-confirm">Réinitialiser</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="scroll-indicator" id="scroll-indicator" aria-label="Défiler vers le bas">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </button>
+
+    <div class="cinematic-transition" id="cinematic-transition"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
