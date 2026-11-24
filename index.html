@@ -128,11 +128,12 @@
                 <div class="section-head">
                     <span class="eyebrow">// Portfolio</span>
                     <h2 class="editorial-title">Projets <em>récents</em></h2>
+                    <p class="section-hint">Cliquez sur un projet ou tapez <code>viewProject('alpha')</code> pour voir les détails.</p>
                 </div>
 
-                <div class="project-grid">
+                <div class="project-grid" id="project-grid">
                     <!-- Projet 1 -->
-                    <a href="#" class="project-card">
+                    <a href="#" class="project-card" data-project="alpha">
                         <div class="project-img-wrapper" style="background: #E0F2FE;">
                             <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop" alt="Projet Alpha">
                             <span class="project-tag">App Web</span>
@@ -154,7 +155,7 @@
                     </a>
 
                     <!-- Projet 2 -->
-                    <a href="#" class="project-card">
+                    <a href="#" class="project-card" data-project="beta">
                         <div class="project-img-wrapper" style="background: #FCE7F3;">
                             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" alt="Projet Beta">
                             <span class="project-tag">E-commerce</span>
@@ -176,7 +177,7 @@
                     </a>
 
                     <!-- Projet 3 -->
-                    <a href="#" class="project-card">
+                    <a href="#" class="project-card" data-project="gamma">
                         <div class="project-img-wrapper" style="background: #F3E8FF;">
                             <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop" alt="Projet Gamma">
                             <span class="project-tag">SaaS</span>
@@ -204,8 +205,8 @@
                 <div class="contact-wrapper">
                     <span class="eyebrow">// Contact</span>
                     <h2 class="editorial-title">Discutons de<br><em>votre projet.</em></h2>
-                    <p class="contact-desc">Prêt à collaborer ? Utilisez la commande <code>contact()</code> dans la console ou cliquez ci-dessous.</p>
-                    <button class="btn-contact-trigger" data-cmd="contact()">Initialiser le contact</button>
+                    <p class="contact-desc">Prêt à collaborer ? Tapez <code>contact()</code> dans la console ou cliquez ci-dessous.</p>
+                    <button class="btn-contact-trigger">Initialiser le contact</button>
                 </div>
             </section>
 
@@ -235,20 +236,20 @@
                 <div class="console-body" id="console-output">
                     <p class="sys-msg">// Système initialisé.</p>
                     <p class="sys-msg">// 0 / 4 sections débloquées.</p>
-                    <p class="sys-msg">// Tapez une commande pour commencer.</p>
+                    <p class="sys-msg">// Tapez <span style="color:var(--accent);">help()</span> pour voir les commandes.</p>
                 </div>
                 <div class="console-input-line">
                     <span class="prompt">$</span>
-                    <input type="text" id="command-input" autocomplete="off" spellcheck="false" placeholder="tapez une commande...">
+                    <input type="text" id="command-input" autocomplete="off" spellcheck="false" placeholder="tapez une commande... (ex: help())">
                 </div>
             </div>
             <div class="hints">
-                <p class="hints-label">Commandes disponibles</p>
+                <p class="hints-label">Commandes rapides</p>
                 <div class="hint-chips">
+                    <button class="hint-chip accent" data-cmd="help()">help()</button>
                     <button class="hint-chip" data-cmd="openParcours()">openParcours()</button>
                     <button class="hint-chip" data-cmd="openRealisations()">openRealisations()</button>
-                    <button class="hint-chip" data-cmd="openContact()">openContact()</button>
-                    <button class="hint-chip accent" data-cmd="openAll()">openAll()</button>
+                    <button class="hint-chip" data-cmd="openAll()">openAll()</button>
                 </div>
             </div>
         </div>
@@ -261,7 +262,7 @@
             <span class="drawer-label">Console</span>
         </button>
         <div class="drawer-panel" id="drawer-panel">
-            <div class="drawer-header">
+            <div class="drawer-header" id="drawer-header">
                 <span class="console-title">~ / portfolio / session.sh</span>
                 <button class="drawer-close" id="drawer-close" aria-label="Fermer">×</button>
             </div>
@@ -282,7 +283,7 @@
         <div class="remaining-chips" id="remaining-chips"></div>
     </div>
 
-    <!-- MODALE DE CONTACT INTERACTIVE -->
+    <!-- MODALE DE CONTACT -->
     <div class="modal-overlay" id="contact-modal" aria-hidden="true">
         <div class="modal modal-contact" role="dialog" aria-modal="true">
             <div class="modal-header">
@@ -309,6 +310,19 @@
                     </div>
                     <button type="submit" class="btn-submit">Envoyer le message</button>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE DE PROJET (DÉTAILS) -->
+    <div class="modal-overlay" id="project-modal" aria-hidden="true">
+        <div class="modal modal-project" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <span class="console-title">project_viewer.exe</span>
+                <button class="modal-close" id="project-close" aria-label="Fermer">×</button>
+            </div>
+            <div class="modal-body" id="project-modal-body">
+                <!-- Injecté par JS -->
             </div>
         </div>
     </div>

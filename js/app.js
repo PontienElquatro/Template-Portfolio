@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const drawerOutput = document.getElementById('drawer-output');
     const drawerInput = document.getElementById('drawer-input');
     const drawerClose = document.getElementById('drawer-close');
+    const drawerHeader = document.getElementById('drawer-header');
 
     const remainingPanel = document.getElementById('remaining-panel');
     const remainingChips = document.getElementById('remaining-chips');
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const remainingClose = document.getElementById('remaining-close');
 
     // Modales
-    const modalOverlay = document.getElementById('modal-overlay'); // Reset
+    const modalOverlay = document.getElementById('modal-overlay'); 
     const modalCancel = document.getElementById('modal-cancel');
     const modalConfirm = document.getElementById('modal-confirm');
 
@@ -36,13 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactClose = document.getElementById('contact-close');
     const contactForm = document.getElementById('contact-form');
     const contactChat = document.getElementById('contact-chat');
-    const btnContactTriggers = document.querySelectorAll('.btn-contact-trigger');
+
+    const projectModal = document.getElementById('project-modal');
+    const projectClose = document.getElementById('project-close');
+    const projectModalBody = document.getElementById('project-modal-body');
+    const projectCards = document.querySelectorAll('.project-card');
 
     // --- État ---
     const STORAGE_KEY = 'portfolio_state_v1';
     const MAIN_IDS = ['section-hero', 'section-expertise', 'section-work', 'section-contact'];
     let unlockedSections = new Set();
     let hiddenRemaining = false;
+    let errorCount = 0; // Pour suggérer help()
+
+    // Historique des commandes
+    let commandHistory = [];
+    let historyIndex = -1;
 
     // --- Curseur ---
     const cursor = document.createElement('div');
@@ -62,6 +72,48 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', () => {
         if (window.scrollY > 30) header.classList.add('scrolled');
         else header.classList.remove('scrolled');
+    });
+
+    // --- Drag & Drop Console ---
+    let isDragging = false;
+    let dragStartX, dragStartY;
+    let drawerStartX, drawerStartY;
+
+    drawerHeader.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.drawer-close')) return;
+        isDragging = true;
+        drawerPanel.classList.add('dragging');
+        
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        
+        const rect = drawerPanel.getBoundingClientRect();
+        drawerStartX = rect.left;
+        drawerStartY = rect.top;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        
+        let newLeft = drawerStartX + dx;
+        let newTop = drawerStartY + dy;
+        
+        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - drawerPanel.offsetWidth));
+        newTop = Math.max(0, Math.min(newTop, window.innerHeight - drawerPanel.offsetHeight));
+        
+        drawerPanel.style.left = newLeft + 'px';
+        drawerPanel.style.top = newTop + 'px';
+        drawerPanel.style.transform = 'none'; 
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            drawerPanel.classList.remove('dragging');
+        }
     });
 
     // --- Persistance ---
@@ -196,10 +248,34 @@ document.addEventListener('DOMContentLoaded', () => {
         else scrollIndicator.classList.remove('visible');
     }
 
+    // --- Helpers ---
+    function showHelp(outputEl) {
+        appendMessage("> Commandes de navigation :", 'hint-msg', outputEl);
+        appendMessage("  openParcours()    - Débloquer le profil et les stacks", 'user-cmd', outputEl);
+        appendMessage("  openRealisations() - Débloquer la section projets", 'user-cmd', outputEl);
+        appendMessage("  openContact()      - Débloquer la section contact", 'user-cmd', outputEl);
+        appendMessage("  openAll()          - Tout débloquer", 'user-cmd', outputEl);
+        appendMessage("> Commandes d'action (dans le portfolio) :", 'hint-msg', outputEl);
+        appendMessage("  contact()          - Ouvrir le formulaire de contact", 'user-cmd', outputEl);
+        appendMessage("  viewProject('id')  - Voir les détails d'un projet (ex: alpha)", 'user-cmd', outputEl);
+        appendMessage("  clear()            - Nettoyer la console", 'user-cmd', outputEl);
+        appendMessage("> Tapez une commande ou cliquez sur les boutons pour agir.", 'sys-msg', outputEl);
+    }
+
+    function clearConsole(outputEl) {
+        outputEl.innerHTML = `<p class="sys-msg">// Console nettoyée.</p>`;
+    }
+
     // --- Exécution des commandes ---
     function resolveCommand(raw) {
         const trimmed = raw.trim();
         if (!trimmed) return null;
+        
+        // Support basique pour viewProject('id')
+        if (trimmed.toLowerCase().startsWith('viewproject(')) {
+            return 'viewProject()';
+        }
+
         if (COMMANDS[trimmed]) return trimmed;
         
         const lower = trimmed.toLowerCase().replace(/;+$/, '');
@@ -243,6 +319,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function executeCommand(rawCmd) {
         if (!rawCmd) return;
+        
+        commandHistory.push(rawCmd);
+        historyIndex = commandHistory.length;
+
         const targetOutput = input && input.offsetParent !== null ? consoleOutput : drawerOutput;
         const targetContainer = input && input.offsetParent !== null ? consoleContainer : drawerPanel;
 
@@ -250,15 +330,44 @@ document.addEventListener('DOMContentLoaded', () => {
         const resolved = resolveCommand(rawCmd);
 
         if (resolved) {
+            errorCount = 0; // Reset erreur
+            
+            if (resolved === 'help()') {
+                showHelp(targetOutput);
+                return;
+            }
+            if (resolved === 'clear()') {
+                clearConsole(targetOutput);
+                return;
+            }
+
+            // Vérifier si c'est une commande dynamique avec argument
+            if (rawCmd.toLowerCase().startsWith('viewproject(')) {
+                const match = rawCmd.match(/['"]([^'"]+)['"]/);
+                if (match && match[1]) {
+                    const projectId = match[1].toLowerCase();
+                    if (PROJECTS_DATA[projectId]) {
+                        appendMessage(`> Ouverture du projet '${projectId}'...`, 'success-msg', targetOutput);
+                        setTimeout(() => openProjectModal(projectId), 400);
+                    } else {
+                        appendMessage(`> Erreur : projet '${projectId}' introuvable.`, 'error-msg', targetOutput);
+                    }
+                } else {
+                    appendMessage(`> Usage : viewProject('alpha')`, 'error-msg', targetOutput);
+                }
+                return;
+            }
+
             appendMessage(COMMANDS[resolved].message, 'success-msg', targetOutput);
             
-            // Si c'est la commande contact()
             if (resolved === 'contact()') {
                 setTimeout(openContactModal, 400);
             } else {
                 unlockSections(COMMANDS[resolved].sections, resolved);
             }
         } else {
+            // Gestion des erreurs (shake + suggestions)
+            errorCount++;
             if (targetContainer) {
                 targetContainer.classList.add('shake');
                 setTimeout(() => targetContainer.classList.remove('shake'), 500);
@@ -268,6 +377,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 appendMessage(`> Commande inconnue. Vouliez-vous dire "${suggestion}" ?`, 'error-msg', targetOutput);
             } else {
                 appendMessage(`> Erreur : commande "${rawCmd}" introuvable.`, 'error-msg', targetOutput);
+            }
+            
+            // UX Fallback : si 3 erreurs de suite, suggérer help()
+            if (errorCount >= 3) {
+                appendMessage(`> Tapez "help()" pour voir la liste des commandes valides.`, 'hint-msg', targetOutput);
+                errorCount = 0;
             }
         }
     }
@@ -322,13 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Bouton Contact dans la section Contact ---
-    btnContactTriggers.forEach(btn => {
-        btn.addEventListener('click', () => {
-            openContactModal();
-        });
-    });
-
     // --- Autocomplete ---
     function attachAutocomplete(inputEl, outputEl) {
         const parent = inputEl.parentElement;
@@ -351,7 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
             suggestions.forEach((cmd, i) => {
                 const item = document.createElement('div');
                 item.className = 'suggestion-item' + (i === selectedIndex ? ' selected' : '');
-                item.innerHTML = `<span>${cmd}</span><span class="sg-label">${COMMANDS[cmd].label}</span>`;
+                item.innerHTML = `<span>${cmd}</span><span class="sg-label">${COMMANDS[cmd]?.label || 'Action'}</span>`;
                 item.addEventListener('mousedown', (e) => {
                     e.preventDefault();
                     inputEl.value = cmd;
@@ -376,6 +484,25 @@ document.addEventListener('DOMContentLoaded', () => {
         inputEl.addEventListener('input', updateSuggestions);
 
         inputEl.addEventListener('keydown', (e) => {
+            // Historique (Flèches haut/bas)
+            if (e.key === 'ArrowUp' && !box.classList.contains('visible')) {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    inputEl.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown' && !box.classList.contains('visible')) {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    inputEl.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    inputEl.value = '';
+                }
+            }
+            
+            // Autocomplete
             if (!box.classList.contains('visible')) return;
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
@@ -431,6 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
         drawerPanel.classList.remove('open');
         drawerToggle.classList.remove('hidden');
         drawer.setAttribute('aria-hidden', 'true');
+        
+        drawerPanel.style.left = '';
+        drawerPanel.style.top = '';
+        drawerPanel.style.transform = '';
     }
     drawerToggle.addEventListener('click', openDrawer);
     drawerClose.addEventListener('click', closeDrawer);
@@ -515,12 +646,10 @@ document.addEventListener('DOMContentLoaded', () => {
         contactModal.classList.add('visible');
         contactModal.setAttribute('aria-hidden', 'false');
         contactForm.reset();
-        // Réinitialiser le chat
         contactChat.innerHTML = `
             <p class="sys-msg">// Initialisation du formulaire de contact...</p>
             <p class="sys-msg">// Veuillez répondre aux questions.</p>
         `;
-        // Focus sur le premier champ
         setTimeout(() => document.getElementById('contact-name').focus(), 100);
     }
     function closeContactModal() {
@@ -536,20 +665,61 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const name = document.getElementById('contact-name').value;
         const email = document.getElementById('contact-email').value;
-        const message = document.getElementById('contact-message').value;
 
-        // Simuler l'envoi
         contactChat.innerHTML += `<p class="user-cmd">> Envoi du message...</p>`;
         
         setTimeout(() => {
             contactChat.innerHTML += `<p class="success-msg">> Message envoyé avec succès par ${name}. Je vous recontacterai à l'adresse ${email}.</p>`;
             contactForm.reset();
-            // Message dans la console principale
             addSystemMessage(`// Message de contact envoyé par ${name} (${email}).`);
-            
-            // Fermeture auto après 2 secondes
             setTimeout(closeContactModal, 2500);
         }, 800);
+    });
+
+    // Gestion Modale Projet
+    function openProjectModal(projectId) {
+        const data = PROJECTS_DATA[projectId];
+        if (!data) return;
+
+        // Construire le contenu HTML de la modale
+        const stackBadges = data.stack.map(s => `<span class="tech-badge" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);">${s}</span>`).join('');
+        
+        projectModalBody.innerHTML = `
+            <div class="project-modal-hero" style="background: ${data.bgColor};">
+                <img src="${data.image}" alt="${data.title}">
+            </div>
+            <div class="project-modal-title">${data.title}</div>
+            <div class="project-price" style="color: var(--text-dim); margin-bottom: 0.5rem;">${data.year} — ${data.tag}</div>
+            <p class="project-modal-desc">${data.desc}</p>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">${stackBadges}</div>
+            
+            <div class="project-modal-links">
+                <a href="${data.liveLink}" target="_blank" class="link-live">Voir le site →</a>
+                <a href="${data.githubLink}" target="_blank" class="link-github">Code source</a>
+            </div>
+        `;
+
+        projectModal.classList.add('visible');
+        projectModal.setAttribute('aria-hidden', 'false');
+    }
+    
+    function closeProjectModal() {
+        projectModal.classList.remove('visible');
+        projectModal.setAttribute('aria-hidden', 'true');
+    }
+    
+    projectClose.addEventListener('click', closeProjectModal);
+    projectModal.addEventListener('click', (e) => {
+        if (e.target === projectModal) closeProjectModal();
+    });
+
+    // Clic sur les cartes projets
+    projectCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault(); // Empêche le lien # par défaut
+            const projectId = card.dataset.project;
+            openProjectModal(projectId);
+        });
     });
 
     // --- Reset Global ---
@@ -578,12 +748,13 @@ document.addEventListener('DOMContentLoaded', () => {
         consoleOutput.innerHTML = `
             <p class="sys-msg">// Système réinitialisé.</p>
             <p class="sys-msg">// 0 / ${TOTAL_MAIN_SECTIONS} sections débloquées.</p>
-            <p class="sys-msg">// Tapez une commande pour commencer.</p>
+            <p class="sys-msg">// Tapez <span style="color:var(--accent);">help()</span> pour voir les commandes.</p>
         `;
         drawerOutput.innerHTML = `<p class="sys-msg">// Console persistante. Tapez une commande.</p>`;
 
         closeDrawer();
         closeContactModal();
+        closeProjectModal();
         localStorage.removeItem(STORAGE_KEY);
         window.scrollTo({ top: 0, behavior: 'smooth' });
         

@@ -170,7 +170,7 @@ body {
 .btn-reset svg { transition: transform 0.4s var(--ease-out); }
 
 /* =========================================
-   TERMINAL DRAWER
+   TERMINAL DRAWER (DÉPLAÇABLE)
    ========================================= */
 .terminal-drawer {
     position: fixed;
@@ -209,10 +209,10 @@ body.portfolio-open .terminal-drawer {
 .drawer-toggle.hidden { display: none; }
 
 .drawer-panel {
-    position: absolute;
-    bottom: calc(100% + 0.6rem);
-    right: 0;
-    left: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: min(480px, 90vw);
     background: rgba(18, 18, 18, 0.97);
     border: 1px solid var(--border-color);
@@ -221,11 +221,12 @@ body.portfolio-open .terminal-drawer {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
     overflow: hidden;
     opacity: 0;
-    transform: translateY(10px);
     pointer-events: none;
     transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
 }
-.drawer-panel.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.drawer-panel.open { opacity: 1; pointer-events: auto; }
+.drawer-panel.dragging { transition: none; cursor: grabbing; }
+
 .drawer-header {
     display: flex;
     align-items: center;
@@ -233,7 +234,9 @@ body.portfolio-open .terminal-drawer {
     padding: 0.7rem 1rem;
     border-bottom: 1px solid var(--border-color);
     background: #1a1a1a;
+    cursor: grab;
 }
+.drawer-header:active { cursor: grabbing; }
 .drawer-close {
     background: transparent;
     border: none;
@@ -287,7 +290,7 @@ body.portfolio-open .terminal-drawer {
 .remaining-chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(212, 193, 158, 0.05); }
 
 /* =========================================
-   MODALES (Reset & Contact)
+   MODALES
    ========================================= */
 .modal-overlay {
     position: fixed;
@@ -304,7 +307,6 @@ body.portfolio-open .terminal-drawer {
 }
 .modal-overlay.visible { opacity: 1; pointer-events: auto; }
 
-/* Modale Classique (Reset) */
 .modal {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
@@ -334,7 +336,7 @@ body.portfolio-open .terminal-drawer {
 .modal-btn.primary { background: #ff5f56; border-color: #ff5f56; color: #fff; }
 .modal-btn.primary:hover { background: #ff7f7a; border-color: #ff7f7a; }
 
-/* Modale de Contact (Style Terminal) */
+/* Modale de Contact */
 .modal-contact {
     padding: 0;
     max-width: 550px;
@@ -418,6 +420,80 @@ body.portfolio-open .terminal-drawer {
 }
 .btn-submit:hover {
     background: var(--accent-bright);
+}
+
+/* Modale de Projet */
+.modal-project {
+    padding: 0;
+    max-width: 900px;
+    width: 95%;
+    text-align: left;
+    background: var(--surface-alt);
+    border-color: rgba(212, 193, 158, 0.2);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+.modal-project .modal-body {
+    overflow-y: auto;
+}
+.project-modal-hero {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+}
+.project-modal-hero img {
+    width: 60%;
+    height: 80%;
+    object-fit: contain;
+}
+.project-modal-title {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+.project-modal-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+.project-modal-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.project-modal-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+.project-modal-links .link-live {
+    background: var(--accent);
+    color: #0a0a0a;
+}
+.project-modal-links .link-live:hover {
+    background: var(--accent-bright);
+}
+.project-modal-links .link-github {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+.project-modal-links .link-github:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 /* =========================================
@@ -753,9 +829,19 @@ body.portfolio-open .terminal-drawer {
     /* Modales sur mobile */
     .modal-contact { width: 95%; }
     .modal-body { padding: 1rem; }
+
+    /* Le drawer sur mobile */
+    .terminal-drawer { right: 1.2rem; bottom: 1.2rem; left: auto; }
+    .drawer-panel { 
+        width: calc(100vw - 2.4rem);
+        left: 1.2rem;
+        right: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        bottom: auto;
+    }
+    .drawer-panel.open { transform: translateY(-50%); }
     
     .scroll-indicator { width: 40px; height: 40px; bottom: 1.2rem; right: 4.5rem; }
     .remaining-panel { right: 1.2rem; bottom: 5.5rem; left: 1.2rem; max-width: none; }
-    .terminal-drawer { right: 1.2rem; bottom: 1.2rem; left: auto; }
-    .drawer-panel { width: calc(100vw - 2.4rem); }
 }
